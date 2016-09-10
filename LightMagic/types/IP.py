@@ -1,6 +1,5 @@
-import json
-
-from bson import json_util
+import re
+import ipaddress
 
 from ._Base import _Base
 
@@ -14,15 +13,23 @@ class IP(_Base):
         """
             Проверяем корректность входных данных
         """
-        if isinstance(value, dict):
+        if value in ('::1',):
             return value
-        elif isinstance(value, list):
-            return value
-        # Разворачиваем
-        elif isinstance(value, str):
-            return json.loads(value, object_hook=json_util.object_hook)
+        if re.match('(?:\d{1,3}\.){3}\d{1,3}/\d{1,2}', value):
+            return str(ipaddress.ip_network(value))
+        elif re.match('(?:\d{1,3}\.){3}\d{1,3}', value):
+            return str(ipaddress.ip_address(value))
         else:
-            raise ValueError
+            raise ValueError('Bad ip format: %s' % value)
 
-    def get_db_type(self):
-        return 'inet'
+    def __str__(self):
+        """ Возвращает вид для отображения """
+        return str(self.value)
+
+    @staticmethod
+    def db_serialize(value):
+        """ Трансформирование объекта в БД. Необходимо для преобразования сложных типов данных. """
+        if value is None:
+            return None
+        else:
+            return str(value)

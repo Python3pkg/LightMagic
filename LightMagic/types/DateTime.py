@@ -24,8 +24,11 @@ class DateTime(_Base):
         if isinstance(value, datetime.datetime):
             return value
 
+        elif isinstance(value, datetime.date):
+            return value
+
         elif isinstance(value, str):
             return dateutil.parser.parse(value, dayfirst=self._dayfirst, yearfirst=self._yearfirst)
 
         else:
-            raise ValueError
+            raise ValueError('Unknown format: type: %s  | value: %s' % (type(value), str(value)))

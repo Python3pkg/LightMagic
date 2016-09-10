@@ -1,16 +1,16 @@
 from ._Base import _Base
 
 
-class Byte(_Base):
+class Url(_Base):
     """
-        Работа с байтами
+        Работа с str
     """
 
     def _validate(self, obj, value):
         """
             Проверяем корректность входных данных
         """
-        return bytes(value)
-
-    def get_db_type(self):
-        return 'bytea'
+        if value is None:
+            return None
+        else:
+            return str(value)
