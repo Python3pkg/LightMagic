@@ -1,5 +1,5 @@
 __pycache__
-
+test_*
 assets/*
 !assets/.gitignore
 protected/runtime/*
@@ -8,7 +8,7 @@ protected/data/*.db
 themes/classic/views/
 # phpstorm project files
 .idea
-
+*.pyc
 # netbeans project files
 nbproject
 
@@ -42,3 +42,5 @@ phpunit.phar
 # ignore sub directory for dev installed apps and extensions
 /apps
 /extensions
+LightMagic.egg-info/
+dist/
