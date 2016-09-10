@@ -20,3 +20,7 @@ class Headers(_Base):
 
         else:
             raise ValueError
+
+    @staticmethod
+    def get_db_type():
+        return 'jsonb'

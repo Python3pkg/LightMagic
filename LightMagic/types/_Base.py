@@ -1,7 +1,8 @@
 class _Base(object):
     """ Базовый класс для типов """
 
-    def __init__(self, value=None, allow_none=True, db_default_value=None, db_primary_key=False, db_autovalue=False, db_type=None):
+    def __init__(self, value=None, allow_none=True, db_default_value=None, db_primary_key=False, db_autovalue=False,
+                 db_type=None, db_force_set_primary_key=False):
         """
         :param value: Значение атрибута по-умолчанию
         :param allow_none: Разрешено ли None значение
@@ -13,13 +14,17 @@ class _Base(object):
         self.db_default_value = db_default_value
         self.db_primary_key = db_primary_key
         self.db_autovalue = db_autovalue
+        self.db_force_set_primary_key = db_force_set_primary_key
 
         # Поддержка нескольких объектов одного класса
         self._values_dict = {}
 
     def __set__(self, obj, value):
         """ Устанавливаем значение """
-        self._values_dict[id(obj)] = self.check_value(obj, value)
+        try:
+            obj._light_magic_values[id(self)] = self._pack_value(self.check_value(obj, value))
+        except AttributeError:
+            obj._light_magic_values = {id(self): self._pack_value(self.check_value(obj, value))}
 
     def check_value(self, obj, value):
         """ Проверяет, корректно ли значение и проходит ли оно валидацию. """
@@ -31,24 +36,30 @@ class _Base(object):
 
     def __get__(self, obj, objtype):
         """ Возвращает значение """
-        return self._values_dict.get(id(obj), self.value)
-
+        try:
+            return self._unpack_value(obj._light_magic_values.get(id(self), self.value))
+        except AttributeError:
+            return self.value
 
     def __validate(self, obj, value):
         """ Проверяет корректность входных данных """
         if value is None:
             if self.allow_none is False:
                 raise ValueError('None value is not allowed')
-            else:
-                return value
 
-    @staticmethod
-    def get_db_type():
+    def get_db_type(self):
         """ Возвращает тип в БД. Необходимо для сложных типов данных. """
         return None
 
-    @staticmethod
-    def db_serialize(value):
+    def _pack_value(self, value):
+        """ Запаковывает значение для внутреннего хранения """
+        return value
+
+    def _unpack_value(self, value):
+        """ Распаковывает значение для представления """
+        return value
+
+    def db_serialize(self, value):
         """ Трансформирование объекта в БД. Необходимо для преобразования сложных типов данных. """
         return value
 
@@ -56,6 +67,9 @@ class _Base(object):
         """ Возвращает вид для отображения """
         return str(self.value)
 
-    @staticmethod
-    def db_deserialize(value):
+    def __repr__(self):
+        """ Возвращает вид для отображения """
+        return str(self.value)
+
+    def db_deserialize(self, value):
         return value

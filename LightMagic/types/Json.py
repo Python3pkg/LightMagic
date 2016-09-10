@@ -27,3 +27,11 @@ class Json(_Base):
     @staticmethod
     def get_db_type():
         return 'json'
+
+    @staticmethod
+    def db_serialize(value):
+        """ Трансформирование объекта в БД. Необходимо для преобразования сложных типов данных. """
+        if isinstance(value, (dict, list)):
+            return json.dumps(value, default=json_util.default)
+        else:
+            return value
