@@ -185,7 +185,7 @@ class _Model(_Tools):
             data = []
             for key in self._get_primary_keys():
                 where.append('%s=%%s' % key)
-                data.append(getattr(self, key))
+                data.append(self.get_additional_parametr(key, 'db_serialize')(getattr(self, key)))
         else:
             raise Exception('Введите условия загрузки объекта')
 
