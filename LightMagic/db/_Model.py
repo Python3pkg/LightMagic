@@ -208,7 +208,7 @@ class _Model(_Tools):
         # Ищем по primary key:
         for key in self._get_primary_keys():
             where.append('%s=%%s' % key)
-            data.append(getattr(self, key))
+            data.append(self.get_additional_parametr(key, 'db_serialize')(getattr(self, key)))
         if len(data) == 0:
             raise PermissionError('Error Primary Key')
 
