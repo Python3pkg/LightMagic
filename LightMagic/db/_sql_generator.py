@@ -25,7 +25,7 @@ class _SqlGenerator:
             data.append('   %s' % '{name} {type} {not_null} {default}'.format(
                 name=item,
                 type=str(field_type).upper(),
-                not_null='NOT NULL' if allow_none else '',
+                not_null='NOT NULL' if not allow_none else '',
                 default='DEFAULT %s' % db_default_value if db_default_value else ''
             ).strip())
         return create_table_template.format(
