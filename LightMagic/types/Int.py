@@ -5,6 +5,7 @@ class Int(_Base):
     """
         Работа с int
     """
+
     def __init__(self, min=None, max=None, *args, **kwargs):
         # Максимальное значение
         self.max = max
@@ -24,3 +25,7 @@ class Int(_Base):
 
         return int(value)
 
+    def get_db_type(self):
+        if self.db_type:
+            return self.db_type
+        return 'bigint'

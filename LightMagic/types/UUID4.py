@@ -35,8 +35,9 @@ class UUID4(_Base):
         except Exception as e:
             raise ValueError('Unknown error: %s' % str(e))
 
-    @staticmethod
-    def get_db_type():
+    def get_db_type(self):
+        if self.db_type:
+            return self.db_type
         return 'uuid'
 
     @staticmethod

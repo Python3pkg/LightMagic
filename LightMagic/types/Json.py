@@ -24,9 +24,10 @@ class Json(_Base):
         else:
             raise ValueError
 
-    @staticmethod
-    def get_db_type():
-        return 'json'
+    def get_db_type(self):
+        if self.db_type:
+            return self.db_type
+        return 'jsonb'
 
     @staticmethod
     def db_serialize(value):

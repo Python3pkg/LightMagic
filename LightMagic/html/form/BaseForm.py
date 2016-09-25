@@ -4,13 +4,14 @@ from tornado.web import escape
 class BaseForm:
     """Базовый класс для форм"""
 
-    def __init__(self, name, value=None, prefix=None, placeholder=None, attributes=None, is_escape=True, **kwargs):
+    def __init__(self, name, value=None, prefix=None, placeholder=None, attributes=None, is_escape=True, process=None, **kwargs):
         """Конструктор"""
         self._name = name
         self._value = value
         self._prefix = '' if prefix is None else prefix
         self._placeholder = placeholder
         self._attributes = attributes
+        self._process = process
 
         if is_escape:
             if isinstance(value, list):
@@ -23,6 +24,9 @@ class BaseForm:
         # Устанавливаем дополнительные аттрибуты
         for item in kwargs:
             setattr(self, '_%s' % item, kwargs[item])
+
+        if self._process and self._value:
+            self._value = self._process(self._value)
 
             # # Забрать из настроек
             # self._default_value = self._cls.__dict__[self._key].value

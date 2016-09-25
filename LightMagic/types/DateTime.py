@@ -32,3 +32,8 @@ class DateTime(_Base):
 
         else:
             raise ValueError('Unknown format: type: %s  | value: %s' % (type(value), str(value)))
+
+    def get_db_type(self):
+        if self.db_type:
+            return self.db_type
+        return 'timestamp with time zone'

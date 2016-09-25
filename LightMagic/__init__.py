@@ -1,2 +1,2 @@
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 __doc__ = """LightMagic is very simple and quick python3 ORM over momoko/psycopg2."""

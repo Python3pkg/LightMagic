@@ -6,7 +6,7 @@ class List(_Base):
         Работа с однотипными массивами.
     """
 
-    def __init__(self, type_of_elements, db_type, value=None, *args, **kwargs):
+    def __init__(self, type_of_elements, db_type=None, value=None, *args, **kwargs):
         self.db_type = db_type
         self.list_type = type_of_elements
 

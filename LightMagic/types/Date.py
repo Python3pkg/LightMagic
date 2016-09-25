@@ -19,17 +19,21 @@ class Date(_Base):
             Проверяем корректность входных данных
         """
         if isinstance(value, datetime.datetime):
-            self._value = value.date()
+            return value.date()
 
         elif isinstance(value, datetime.date):
-            self._value = value
+            return value
 
         elif isinstance(value, str):
-            try:
-                self._value = datetime.datetime.strptime(value, '%Y-%m-%d')
-            except ValueError:
-                pass
+            for format in ('%Y-%m-%d', '%d.%m.%Y'):
+                try:
+                    return datetime.datetime.strptime(value, format)
+                except ValueError:
+                    pass
 
-            self._value = datetime.datetime.strptime(value, '%Y-%m-%d')
-        else:
-            raise ValueError
+        raise ValueError('Unsupported Format of Value')
+
+    def get_db_type(self):
+        if self.db_type:
+            return self.db_type
+        return 'date'

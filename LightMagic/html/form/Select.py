@@ -4,8 +4,8 @@ from .BaseForm import BaseForm
 class Select(BaseForm):
     """Отрисовывает форму select"""
 
-    def __init__(self, name, list_of_values: list, allow_empty=False, empty_title=None, value=None, prefix=None,
-                 placeholder=None, attributes=None):
+    def __init__(self, name, list_of_values=None, allow_empty=False, empty_title=None, value=None, prefix=None,
+                 placeholder=None, attributes=None, l_object=None):
         """
 
         :param name:
@@ -16,6 +16,15 @@ class Select(BaseForm):
         :param attributes:
         :return:
         """
+        if l_object:
+            if l_object.__class__.__dict__[name].allow_none:
+                list_of_values = ['']
+            else:
+                list_of_values = []
+
+            list_of_values.extend(l_object.__class__.__dict__[name].list_of_values)
+            self._labels = l_object.__class__.__dict__[name].labels
+
         super().__init__(name, value=value, prefix=prefix, placeholder=placeholder, attributes=attributes,
                          list_of_values=list_of_values, allow_empty=allow_empty, empty_title=empty_title)
 
@@ -41,6 +50,12 @@ class Select(BaseForm):
                 selected = 'selected="selected"'
             else:
                 selected = ''
+
+            if self._labels:
+                option_title = self._labels.get(option_value, option_value)
+            else:
+                option_title = option_value
+
             options.append('<option value="%s"%s>%s</option>' % (option_value, selected, option_title))
 
         name = '%s%s' % (self._prefix, self._name)

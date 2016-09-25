@@ -15,6 +15,7 @@ class _Base(object):
         self.db_primary_key = db_primary_key
         self.db_autovalue = db_autovalue
         self.db_force_set_primary_key = db_force_set_primary_key
+        self.db_type = db_type
 
         # Поддержка нескольких объектов одного класса
         self._values_dict = {}

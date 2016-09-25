@@ -1,7 +1,8 @@
+from LightMagic.db._sql_generator import _SqlGenerator
 from ._Tools import _Tools
 
 
-class _Model(_Tools):
+class _Model(_Tools, _SqlGenerator):
     """ Базовая модель """
 
     # Исключает из модели БД следующие параметры

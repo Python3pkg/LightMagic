@@ -14,3 +14,8 @@ class Url(_Base):
             return None
         else:
             return str(value)
+
+    def get_db_type(self):
+        if self.db_type:
+            return self.db_type
+        return 'text'
