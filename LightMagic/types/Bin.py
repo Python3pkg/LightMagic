@@ -1,11 +1,13 @@
-from ._Base import _Base
 import re
+
+from ._Base import _Base
 
 
 class Bin(_Base):
     """
         Работа с int
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -18,4 +20,3 @@ class Bin(_Base):
             raise ValueError('Value isn\'t BIN')
 
         return int(value)
-

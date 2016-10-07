@@ -54,5 +54,5 @@ class CryptoAES(_Base):
             if value is None:
                 return None
             return self._unpack_value(bytes(value))
-        except Exception as e:
+        except Exception:
             return bytes(value).decode('utf-8')
