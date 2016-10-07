@@ -49,4 +49,7 @@ class UUID4(_Base):
             return value
 
     def db_deserialize(self, value):
-        return uuid.UUID(str(value).replace('-', ''), version=4)
+        try:
+            return uuid.UUID(str(value).replace('-', ''), version=4)
+        except:
+            return value
