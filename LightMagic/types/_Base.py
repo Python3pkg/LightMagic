@@ -2,7 +2,7 @@ class _Base(object):
     """ Базовый класс для типов """
 
     def __init__(self, value=None, allow_none=True, db_default_value=None, db_primary_key=False, db_autovalue=False,
-                 db_type=None, db_force_set_primary_key=False):
+                 db_type=None, db_force_set_primary_key=False, label=None):
         """
         :param value: Значение атрибута по-умолчанию
         :param allow_none: Разрешено ли None значение
@@ -16,6 +16,8 @@ class _Base(object):
         self.db_autovalue = db_autovalue
         self.db_force_set_primary_key = db_force_set_primary_key
         self.db_type = db_type
+
+        self.label = label
 
         # Поддержка нескольких объектов одного класса
         self._values_dict = {}

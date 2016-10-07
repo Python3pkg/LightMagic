@@ -77,3 +77,7 @@ class _Tools:
             if args is not None:
                 for item in args:
                     print(item, sep=' ')
+
+    @classmethod
+    def get_label(cls, key):
+        return getattr(cls.__dict__[key], 'label')
