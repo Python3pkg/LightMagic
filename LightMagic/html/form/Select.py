@@ -23,7 +23,11 @@ class Select(BaseForm):
                 list_of_values = []
 
             list_of_values.extend(l_object.__class__.__dict__[name].list_of_values)
+
+        try:
             self._label = l_object.__class__.__dict__[name].label
+        except:
+            self._label = None
 
         super().__init__(name, value=value, prefix=prefix, placeholder=placeholder, attributes=attributes,
                          list_of_values=list_of_values, allow_empty=allow_empty, empty_title=empty_title)
