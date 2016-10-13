@@ -170,6 +170,7 @@ class JoinBase(_Tools):
     @staticmethod
     def _prepare_where(model: Model, filter_condition: tuple, table_alias=None) -> list:
         """ Сборка where """
+
         return model._parse_filter(filter_condition, table_alias)
         # if filter_condition is None:
         #     return result

@@ -28,5 +28,5 @@ class Join(JoinBase):
             print(self._sql_query)
             print('data', data)
             print('*' * 30)
-        cursor = self.db.execute(self._sql_query, data)
-        return cursor.fetchall()
+        self.db.execute(self._sql_query, data)
+        return self.db.fetchall()
