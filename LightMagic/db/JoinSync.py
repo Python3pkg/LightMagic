@@ -1,5 +1,3 @@
-import tornado.gen
-
 from LightMagic.db.JoinBase import JoinBase
 
 
@@ -18,7 +16,6 @@ class Join(JoinBase):
         данный x действительно существтует в модели, приведение типа и защита от sql инъекций.
     """
 
-    @tornado.gen.coroutine
     def run(self, limit=100, offset=0):
         """ Собирает и выполняет Join """
         # if self._sql_query is None:
@@ -31,5 +28,5 @@ class Join(JoinBase):
             print(self._sql_query)
             print('data', data)
             print('*' * 30)
-        cursor = yield self.db.execute(self._sql_query, data)
+        cursor = self.db.execute(self._sql_query, data)
         return cursor.fetchall()

@@ -27,7 +27,7 @@ class A(Model):
     def get_table_name(self):
         return 'table_a'
 
-A.date = dateyнtime.datetime.now().date()
+A.date = datetime.datetime.now().date()
 print('A.date', A.date)
 # B = A(None)
 # C = A(None)
