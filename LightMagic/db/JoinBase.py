@@ -68,11 +68,13 @@ class JoinBase(_Tools):
 
         # Собранный запрос для данного join
         self._sql_query = None
-
         self._order_by = order_by
+        if order_by is not None:
+            self._order_by_table = 't1'
         self._order_type = order_type
 
-    def join(self, model: Model, fields: tuple, on: dict, filter_condition=None, join_type=None):
+    def join(self, model: Model, fields: tuple, on: dict, filter_condition=None, join_type=None, order_by=None,
+             order_type='ASC'):
         """
         Join-ит таблицу.
         :param model:
@@ -99,6 +101,12 @@ class JoinBase(_Tools):
             raise ValueError
 
         join_alias = 't%s' % (len(self._join) + 2)
+
+        if order_by is not None:
+            self._order_by_table = join_alias
+            self._order_by = order_by
+            self._order_type = order_type
+
         self._join.append((model, fields, on, filter_condition, join_type, join_alias))
 
         return self
@@ -136,13 +144,13 @@ class JoinBase(_Tools):
             # join.append('JOIN %s %s ON %s' % (model.get_table_name(), join_alias, self._prepare_join_on(on)))
             join.append(self._prepare_join(model, join_type, on, join_map))
 
-        query = 'SELECT {fields} FROM {start_table_name} t1 {join} {where} ORDER BY {order_by} {order_type}'.format(
+        query = 'SELECT {fields} FROM {start_table_name} t1 {join} {where} {order_by} {order_type}'.format(
             fields=','.join(select_fields),
             start_table_name=self._start_model.get_table_name(),
             join=' '.join(join),
             where='WHERE %s' % ' AND '.join(where) if len(where) > 0 else '',
-            order_by=self._order_by,
-            order_type=self._order_type
+            order_by='ORDER BY %s.%s' % (self._order_by_table, self._order_by) if self._order_by else '',
+            order_type=self._order_type or ''
         )
 
         return query, data
