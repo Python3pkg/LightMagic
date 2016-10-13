@@ -180,7 +180,7 @@ class _Model(_Tools, _SqlGenerator):
         if filter_condition is not None:
             where, data = self._parse_filter(filter_condition)
 
-        # Ищем по primary key:
+        # Ищем по primary key:†®
         elif by_primary_key is True:
             where = []
             data = []

@@ -5,7 +5,7 @@ class Select(BaseForm):
     """Отрисовывает форму select"""
 
     def __init__(self, name, list_of_values=None, allow_empty=False, empty_title=None, value=None, prefix=None,
-                 placeholder=None, attributes=None, l_object=None):
+                 placeholder=None, attributes=None, l_object=None, fields_names=None):
         """
 
         :param name:
@@ -29,6 +29,8 @@ class Select(BaseForm):
         except:
             self._label = None
 
+        self._fields_names = fields_names
+
         super().__init__(name, value=value, prefix=prefix, placeholder=placeholder, attributes=attributes,
                          list_of_values=list_of_values, allow_empty=allow_empty, empty_title=empty_title)
 
@@ -43,22 +45,16 @@ class Select(BaseForm):
                 title = ''
             options.append('<option value="">%s</option>' % title)
 
-        for item in self._list_of_values:
-            if isinstance(item, tuple):
-                option_value = item[0]
-                option_title = item[1]
+        for option_value in self._list_of_values:
+            if self._fields_names:
+                option_title = self._fields_names.get(option_value, option_value)
             else:
-                option_value = option_title = str(item)
+                option_title = option_value
 
             if str(option_value) == str(self._value):
                 selected = 'selected="selected"'
             else:
                 selected = ''
-
-            if self._label:
-                option_title = self._label.get(option_value, option_value)
-            else:
-                option_title = option_value
 
             options.append('<option value="%s"%s>%s</option>' % (option_value, selected, option_title))
 
