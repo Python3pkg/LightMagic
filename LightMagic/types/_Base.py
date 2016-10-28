@@ -2,7 +2,8 @@ class _Base(object):
     """ Базовый класс для типов """
 
     def __init__(self, value=None, allow_none=True, db_default_value=None, db_primary_key=False, db_autovalue=False,
-                 db_type=None, db_force_set_primary_key=False, label=None):
+                 db_type=None, db_force_set_primary_key=False, label=None, foreign_key_model=None,
+                 foreign_key_field=None):
         """
         :param value: Значение атрибута по-умолчанию
         :param allow_none: Разрешено ли None значение
@@ -21,6 +22,9 @@ class _Base(object):
 
         # Поддержка нескольких объектов одного класса
         self._values_dict = {}
+
+        self.foreign_key_model = foreign_key_model
+        self.foreign_key_field = foreign_key_field
 
     def __set__(self, obj, value):
         """ Устанавливаем значение """
