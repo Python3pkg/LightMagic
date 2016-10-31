@@ -29,8 +29,7 @@ class JoinBase(_Tools):
     }
 
     def __init__(self, db, model: Model, fields: tuple, filter_condition=None, default_join_type='inner',
-                 debug_mode=False,
-                 immutable_models=True, order_by=None, order_type='ASC'):
+                 debug_mode=False, immutable_models=True, order_by=None, order_type='ASC', aliases=None):
         """
 
         :param model: Model
@@ -72,9 +71,10 @@ class JoinBase(_Tools):
         if order_by is not None:
             self._order_by_table = 't1'
         self._order_type = order_type
+        self._start_model_aliases = aliases or {}
 
     def join(self, model: Model, fields: tuple, on: dict, filter_condition=None, join_type=None, order_by=None,
-             order_type='ASC'):
+             order_type='ASC', aliases=None):
         """
         Join-ит таблицу.
         :param model:
@@ -107,7 +107,7 @@ class JoinBase(_Tools):
             self._order_by = order_by
             self._order_type = order_type
 
-        self._join.append((model, fields, on, filter_condition, join_type, join_alias))
+        self._join.append((model, fields, on, filter_condition, join_type, join_alias, aliases))
 
         return self
 
@@ -129,13 +129,13 @@ class JoinBase(_Tools):
 
     def _compile_query(self) -> str:
         """ Собирает запрос """
-        select_fields = self._prepare_fields('t1', self._start_model_fields)
+        select_fields = self._prepare_fields('t1', self._start_model_fields, self._start_model_aliases)
         where, data = self._prepare_where(self._start_model, self._start_model_where, 't1')
         join = []
         join_map = {hash(self._start_model): 't1'}
-        for model, fields, on, l_where, join_type, join_alias in self._join:
+        for model, fields, on, l_where, join_type, join_alias, aliases in self._join:
             join_map[hash(model)] = join_alias
-            select_fields.extend(self._prepare_fields(join_alias, fields))
+            select_fields.extend(self._prepare_fields(join_alias, fields, aliases))
 
             # Подготавливаем фильтр:
             filter_where, filter_data = self._prepare_where(model, l_where, join_alias)
@@ -156,11 +156,21 @@ class JoinBase(_Tools):
         return query, data
 
     @staticmethod
-    def _prepare_fields(join_alias, fields):
+    def _prepare_fields(join_alias, fields, aliases):
         if fields is None:
             return []
         else:
-            return ['%s.%s' % (join_alias, field) for field in fields]
+            result = []
+            for field in fields:
+                if isinstance(aliases, dict) and aliases.get(field):
+                    result.append('{join_alias}.{field} as {alias}'.format(
+                        join_alias=join_alias,
+                        field=field,
+                        alias=aliases.get(field)
+                    ))
+                else:
+                    result.append('%s.%s' % (join_alias, field))
+            return result
 
     def _prepare_join_on(self, on, join_map):
         """ Готовим правило join-а """
