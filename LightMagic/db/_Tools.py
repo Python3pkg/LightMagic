@@ -16,7 +16,7 @@ class _Tools:
                 if isinstance(filter_condition[key], dict):
                     for operator in filter_condition[key]:
                         value = filter_condition[key][operator]
-                        if isinstance(value, (tuple, list)):
+                        if str(operator).upper() != 'IN' and isinstance(value, (tuple, list)):
                             for val in value:
                                 where_item, value = self._parse_filter_item(key, operator, val, table_alias)
                                 where.append(where_item)
@@ -39,26 +39,39 @@ class _Tools:
         if key not in self.get_model_fields():
             raise ValueError('Некорректный ключ %s в фильтре' % key)
 
-        if operator not in ('=', '<', '>', '>=', '<='):
+        operator = str(operator).upper()
+        if operator not in ('=', '<', '>', '>=', '<=', 'IN'):
             raise ValueError('Некорректный оператор %s в фильтре' % operator)
 
-        # Валидация
-        type(self).__dict__[key].check_value(self, value)
+        if operator == 'IN':
+            # Так как IN содержит группу значений, поэтому необходимо провалидировать каждое из значений:
+            # Валидация
+            for val in value:
+                type(self).__dict__[key].check_value(self, val)
 
-        # Получение типа данных в БД
-        db_type = type(self).__dict__[key].get_db_type()
+            # Можно не приводить к типу данных
+            where = '{table_alias}{key}=ANY(%s)'.format(
+                key=key,
+                table_alias='%s.' % table_alias if table_alias is not None else ''
+            )
+        else:
+            # Валидация
+            type(self).__dict__[key].check_value(self, value)
 
-        # Приводим значение фильтруемого поля в вид, хранимый в БД.
-        # Данная подготовка необходима для, например,  для шифрованных полей.
-        if isinstance(type(self).__dict__[key], types.CryptoAES):
-            value = self._light_magic_values[id(type(self).__dict__[key])]
+            # Получение типа данных в БД
+            db_type = type(self).__dict__[key].get_db_type()
 
-        where = '{table_alias}{key}{operator}%s{db_type}'.format(
-            key=key,
-            operator=operator,
-            db_type='::%s' % db_type if db_type is not None else '',
-            table_alias='%s.' % table_alias if table_alias is not None else ''
-        )
+            # Приводим значение фильтруемого поля в вид, хранимый в БД.
+            # Данная подготовка необходима для, например,  для шифрованных полей.
+            if isinstance(type(self).__dict__[key], types.CryptoAES):
+                value = self._light_magic_values[id(type(self).__dict__[key])]
+
+            where = '{table_alias}{key}{operator}%s{db_type}'.format(
+                key=key,
+                operator=operator,
+                db_type='::%s' % db_type if db_type is not None else '',
+                table_alias='%s.' % table_alias if table_alias is not None else ''
+            )
 
         return where, value
 
