@@ -93,7 +93,7 @@ class JoinBase(_Tools):
         if not isinstance(on, dict):
             raise ValueError
 
-        if not (filter_condition is None or isinstance(filter_condition, tuple)):
+        if not (filter_condition is None or isinstance(filter_condition, dict)):
             raise ValueError
 
         join_type = self._default_join_type if join_type is None else join_type
