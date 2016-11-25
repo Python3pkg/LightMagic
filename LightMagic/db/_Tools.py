@@ -66,12 +66,21 @@ class _Tools:
             if isinstance(type(self).__dict__[key], types.CryptoAES):
                 value = self._light_magic_values[id(type(self).__dict__[key])]
 
-            where = '{table_alias}{key}{operator}%s{db_type}'.format(
-                key=key,
-                operator=operator,
-                db_type='::%s' % db_type if db_type is not None else '',
-                table_alias='%s.' % table_alias if table_alias is not None else ''
-            )
+            if value is None:
+                if type(self).__dict__.get('allow_none', True) is False or operator != '=':
+                    raise ValueError
+                else:
+                    where = '{table_alias}{key} is NULL'.format(
+                        key=key,
+                        table_alias='%s.' % table_alias if table_alias is not None else ''
+                    )
+            else:
+                where = '{table_alias}{key}{operator}%s{db_type}'.format(
+                    key=key,
+                    operator=operator,
+                    db_type='::%s' % db_type if db_type is not None else '',
+                    table_alias='%s.' % table_alias if table_alias is not None else ''
+                )
 
         return where, value
 
