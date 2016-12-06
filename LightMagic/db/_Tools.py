@@ -16,15 +16,9 @@ class _Tools:
                 if isinstance(filter_condition[key], dict):
                     for operator in filter_condition[key]:
                         value = filter_condition[key][operator]
-                        if str(operator).upper() != 'IN' and isinstance(value, (tuple, list)):
-                            for val in value:
-                                where_item, value = self._parse_filter_item(key, operator, val, table_alias)
-                                where.append(where_item)
-                                data.append(value)
-                        else:
-                            where_item, value = self._parse_filter_item(key, operator, value, table_alias)
-                            where.append(where_item)
-                            data.append(value)
+                        where_item, value = self._parse_filter_item(key, operator, value, table_alias)
+                        where.append(where_item)
+                        data.append(value)
 
                 else:
                     where_item, value = self._parse_filter_item(key, '=', filter_condition[key], table_alias)
