@@ -174,9 +174,17 @@ class JoinBase(_Tools):
 
     def _prepare_join_on(self, on, join_map):
         """ Готовим правило join-а """
-        return '='.join(['%s.%s=%s.%s' % (join_map[hash(model)], key,
-                                          join_map[hash(on[(model, key)][0])], on[(model, key)][1])
-                         for model, key in on])
+        compares = []
+        for item1, item2 in on.items():
+            table1 = join_map[hash(item1[0])]
+            table2 = join_map[hash(item2[0])]
+            if isinstance(item1[1], (tuple, list)):
+                for n, f in enumerate(item1[1]):
+                    compares.append('%s.%s=%s.%s' % (table1, item1[1][n], table2, item2[1][n]))
+            else:
+                compares.append('%s.%s=%s.%s' % (table1, item1[1], table2, item2[1]))
+        return ' AND '.join(compares)
+
 
     def _prepare_join(self, model, join_type, on, join_map):
         if join_type in self._join_types:
