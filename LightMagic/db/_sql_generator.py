@@ -20,6 +20,10 @@ class _SqlGenerator:
             if str(item).startswith('_') or callable(self.__class__.__dict__[item]):
                 continue
             field_type = getattr(self.__class__.__dict__[item], 'get_db_type')()
+            if getattr(self.__class__.__dict__[item], 'db_autovalue') is True:
+                if str(field_type).upper() == 'BIGINT':
+                    field_type = 'BIGSERIAL'
+
             allow_none = getattr(self.__class__.__dict__[item], 'allow_none')
             db_default_value = getattr(self.__class__.__dict__[item], 'db_default_value')
             data.append('   %s' % '{name} {type} {not_null} {default}'.format(
