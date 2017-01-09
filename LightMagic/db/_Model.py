@@ -33,6 +33,8 @@ class _Model(_Tools, _SqlGenerator):
         # Флаг сохранения в БД. НЕ ПРОВЕРЯЕТСЯ В БД. Меняется на основе методов load/create
         self._is_created = False
 
+        self._light_magic_values = {}
+
     def get_table_name(self):
         """ Возвращает имя таблицы. Необходимо переопределить. """
         raise ValueError
