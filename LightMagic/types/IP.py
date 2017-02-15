@@ -13,13 +13,9 @@ class IP(_Base):
         """
             Проверяем корректность входных данных
         """
-        if value in ('::1',):
-            return value
-        if re.match('(?:\d{1,3}\.){3}\d{1,3}/\d{1,2}', value):
-            return str(ipaddress.ip_network(value))
-        elif re.match('(?:\d{1,3}\.){3}\d{1,3}', value):
+        try:
             return str(ipaddress.ip_address(value))
-        else:
+        except ValueError:
             raise ValueError('Bad ip format: %s' % value)
 
     def __str__(self):
