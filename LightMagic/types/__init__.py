@@ -21,3 +21,4 @@ from .List import List
 from .Str import Str
 from .UUID4 import UUID4
 from .Url import Url
+from .Decimal import Decimal

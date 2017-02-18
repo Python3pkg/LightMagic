@@ -16,6 +16,7 @@ class A(Model):
     float = types.Float()
     byte = types.Byte()
     date = types.Date()
+    z = types.Decimal(precision=6, scale=5)
 
     def test_1(self): ...
 
@@ -26,9 +27,12 @@ class A(Model):
 
     def get_table_name(self):
         return 'table_a'
-
-A.date = datetime.datetime.now().date()
-print('A.date', A.date)
+a = A(None)
+a.date = datetime.datetime.now().date()
+print('a.date', a.date)
+a.z = '123'
+print(type(a.z), a.z)
+print(a.generate_create_table())
 # B = A(None)
 # C = A(None)
 # # print(type(B.int_a))

@@ -11,3 +11,8 @@ class Float(_Base):
             Проверяем корректность входных данных
         """
         return float(value)
+
+    def get_db_type(self):
+        if self.db_type:
+            return self.db_type
+        return 'FLOAT'
