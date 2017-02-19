@@ -31,7 +31,7 @@ class _SqlGenerator:
 
         data = []
         comments = []
-        for item in self.__class__.__dict__.keys():
+        for item in sorted(self.__class__.__dict__.keys()):
             if str(item).startswith('_') or callable(self.__class__.__dict__[item]):
                 continue
             field_type = getattr(self.__class__.__dict__[item], 'get_db_type')()
@@ -57,7 +57,7 @@ class _SqlGenerator:
                 ))
 
         # Генерируем первичный ключ
-        if len(self._get_primary_keys()) > 1:
+        if len(self._get_primary_keys()) > 0:
             primary_key = primary_key_template.format(
                 primary_keys=','.join(self._get_primary_keys()),
                 pkey_name=self.get_table_name().replace('.', '_'),
@@ -73,5 +73,4 @@ class _SqlGenerator:
             primary_key=primary_key,
             items=',\n'.join(data),
             comments='\n'.join(comments)
-
         )
