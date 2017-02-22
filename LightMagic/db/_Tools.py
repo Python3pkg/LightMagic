@@ -35,10 +35,14 @@ class _Tools:
 
         operator = str(operator).upper()
         if operator not in (
-        'IN', '*', '<<=', '<->', '=', '||', '@@@', '>=', '@@', '?-|', '@', '&&', '&>', '!!', '@>', '-', '?#', '<>', '/',
-        '#', '<<', '<^', '|&>', '&<', '!', '##', '>^', '>', '<=', '<@', '&', '%', '>>', '~=', '<', '<<|', '?-', '>>=',
-        '@-@', '+', '||/', '&<|', '|', '?|', '?||', '|/', '^', '~', '|>>'):
+                'IN', '*', '<<=', '<->', '=', '||', '@@@', '>=', '@@', '?-|', '@', '&&', '&>', '!!', '@>', '-', '?#',
+                '<>', '/',
+                '#', '<<', '<^', '|&>', '&<', '!', '##', '>^', '>', '<=', '<@', '&', '%', '>>', '~=', '<', '<<|', '?-',
+                '>>=',
+                '@-@', '+', '||/', '&<|', '|', '?|', '?||', '|/', '^', '~', '|>>'):
             raise ValueError('Некорректный оператор %s в фильтре' % operator)
+        # Получение типа данных в БД
+        db_type = type(self).__dict__[key].get_db_type()
 
         if operator == 'IN':
             # Так как IN содержит группу значений, поэтому необходимо провалидировать каждое из значений:
@@ -47,16 +51,14 @@ class _Tools:
                 type(self).__dict__[key].check_value(self, val)
 
             # Можно не приводить к типу данных
-            where = '{table_alias}{key}=ANY(%s)'.format(
+            where = '{table_alias}{key}=ANY(%s{db_type})'.format(
                 key=key,
-                table_alias='%s.' % table_alias if table_alias is not None else ''
+                table_alias='%s.' % table_alias if table_alias is not None else '',
+                db_type='::%s[]' % db_type if db_type is not None else '',
             )
         else:
             # Валидация
             type(self).__dict__[key].check_value(self, value)
-
-            # Получение типа данных в БД
-            db_type = type(self).__dict__[key].get_db_type()
 
             # Приводим значение фильтруемого поля в вид, хранимый в БД.
             # Данная подготовка необходима для, например,  для шифрованных полей.
