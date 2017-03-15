@@ -51,8 +51,9 @@ class _Base(object):
     def __validate(self, obj, value):
         """ Проверяет корректность входных данных """
         if value is None:
-            if self.allow_none is False:
-                raise ValueError('None value is not allowed')
+            if self.allow_none:
+                return value
+            raise ValueError('None value is not allowed')
 
     def get_db_type(self):
         """ Возвращает тип в БД. Необходимо для сложных типов данных. """
