@@ -75,6 +75,6 @@ class List(_Base):
         raise ValueError('Can`t deserialize object')
 
     def append(self, p_object):
-        print(self.value)
+        print((self.value))
         self.value.append(self._validate(None, p_object))
-        print(self.value)
+        print((self.value))

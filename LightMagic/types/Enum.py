@@ -19,7 +19,7 @@ class Enum(_Base):
         """
         value = self.formatter(value)
         if value not in self.list_of_values:
-            print(self.list_of_values)
+            print((self.list_of_values))
             raise ValueError('Invalid value "%s"' % value)
 
         return value

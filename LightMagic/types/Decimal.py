@@ -1,4 +1,4 @@
-from decimal import Decimal as PythonDecimal
+from .decimal import Decimal as PythonDecimal
 
 from ._Base import _Base
 

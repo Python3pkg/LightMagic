@@ -29,10 +29,10 @@ class A(Model):
         return 'table_a'
 a = A(None)
 a.date = datetime.datetime.now().date()
-print('a.date', a.date)
+print(('a.date', a.date))
 a.z = '123'
-print(type(a.z), a.z)
-print(a.generate_create_table())
+print((type(a.z), a.z))
+print((a.generate_create_table()))
 # B = A(None)
 # C = A(None)
 # # print(type(B.int_a))

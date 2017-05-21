@@ -26,10 +26,10 @@ class Join(JoinBase):
 
         self._sql_query = '%s LIMIT %s OFFSET %s' % (self._sql_query, limit, offset)
         if self._debug_mode:
-            print('*' * 30)
+            print(('*' * 30))
             print('SQL QUERY:')
-            print(self._sql_query)
-            print('data', data)
-            print('*' * 30)
+            print((self._sql_query))
+            print(('data', data))
+            print(('*' * 30))
         cursor = yield self.db.execute(self._sql_query, data)
         return cursor.fetchall()

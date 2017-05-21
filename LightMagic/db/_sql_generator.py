@@ -1,3 +1,4 @@
+import collections
 # Шаблон первичного ключа
 primary_key_template = """,CONSTRAINT {pkey_name} PRIMARY KEY ({primary_keys})"""
 
@@ -32,7 +33,7 @@ class _SqlGenerator:
         data = []
         comments = []
         for item in sorted(self.__class__.__dict__.keys()):
-            if str(item).startswith('_') or callable(self.__class__.__dict__[item]):
+            if str(item).startswith('_') or isinstance(self.__class__.__dict__[item], collections.Callable):
                 continue
             field_type = getattr(self.__class__.__dict__[item], 'get_db_type')()
             if getattr(self.__class__.__dict__[item], 'db_autovalue') is True:

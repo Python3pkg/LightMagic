@@ -1,4 +1,4 @@
-import json
+from . import json
 
 from ._Base import _Base
 

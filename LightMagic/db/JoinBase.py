@@ -119,11 +119,11 @@ class JoinBase(_Tools):
 
         self._sql_query = '%s LIMIT %s OFFSET %s' % (self._sql_query, limit, offset)
         if self._debug_mode:
-            print('*' * 30)
+            print(('*' * 30))
             print('SQL QUERY:')
-            print(self._sql_query)
-            print('data', data)
-            print('*' * 30)
+            print((self._sql_query))
+            print(('data', data))
+            print(('*' * 30))
         cursor = yield self.db.execute(self._sql_query, data)
         return cursor.fetchall()
 
@@ -175,7 +175,7 @@ class JoinBase(_Tools):
     def _prepare_join_on(self, on, join_map):
         """ Готовим правило join-а """
         compares = []
-        for item1, item2 in on.items():
+        for item1, item2 in list(on.items()):
             table1 = join_map[hash(item1[0])]
             table2 = join_map[hash(item2[0])]
             if isinstance(item1[1], (tuple, list)):

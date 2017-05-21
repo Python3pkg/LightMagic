@@ -1,4 +1,4 @@
-import json
+from . import json
 
 from bson import json_util
 

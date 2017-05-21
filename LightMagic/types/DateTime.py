@@ -1,4 +1,4 @@
-import datetime
+from . import datetime
 
 import dateutil.parser
 

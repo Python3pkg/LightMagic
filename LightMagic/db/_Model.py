@@ -1,5 +1,6 @@
 from LightMagic.db._sql_generator import _SqlGenerator
 from ._Tools import _Tools
+import collections
 
 
 class _Model(_Tools, _SqlGenerator):
@@ -42,9 +43,8 @@ class _Model(_Tools, _SqlGenerator):
     def get_model_fields(self, force_reload=False):
         """ Возвращает поля модели """
         if self._check_cache('model_fields') is None and force_reload is False:
-            model_fields_t = tuple(filter(
-                lambda x: (x if not str(x).startswith('_') and not callable(
-                    getattr(self, x)) and x not in self._exclude_from_db_model else None), dir(self)))
+            model_fields_t = tuple([x for x in dir(self) if (x if not str(x).startswith('_') and not isinstance(
+                    getattr(self, x), collections.Callable) and x not in self._exclude_from_db_model else None)])
 
             model_fields = {key: self.__class__.__dict__[key].__class__ for key in model_fields_t}
             self._set_cache('model_fields', model_fields)
@@ -229,7 +229,7 @@ class _Model(_Tools, _SqlGenerator):
         keys = []
         if self._check_cache('update_keys') is None:
             # Исключаем первичные ключи из обновления
-            updated_fields = list(filter(lambda x: x not in self._get_primary_keys(), self.get_model_fields()))
+            updated_fields = list([x for x in self.get_model_fields() if x not in self._get_primary_keys()])
             # WHERE
             where = []
             sub_query = []
